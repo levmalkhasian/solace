@@ -32,9 +32,9 @@ struct ContentView: View {
                 
                 // Start Focus Button
                 Button {
-                    shieldManager.applyShield() // uncomment later
                     nfcManager.startScan(prompt: "Scan to Start Focus") { success in
                         if success {
+                            shieldManager.applyShield()
                             vm.startFocus() // call function here
                         } else {
                             print("Failed to start focus mode.")
@@ -71,6 +71,8 @@ struct ContentView: View {
                 
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black, ignoresSafeAreaEdges: .all)
         .familyActivityPicker(isPresented: $showingPicker, selection: $shieldManager.selection) // when showingPicker is true, show the Apple app picker UI.
         .task { await shieldManager.requestAuthentication() } // chosen apps stored into shieldManager.selection
         .fullScreenCover(isPresented: $vm.isFocused) {

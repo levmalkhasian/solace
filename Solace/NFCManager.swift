@@ -9,10 +9,10 @@ import CoreNFC
 
 final class NFCManager: NSObject, NFCNDEFReaderSessionDelegate {
    
-    private var session: NFCNDEFReaderSession? // stores session
+    private var nfcSession: NFCNDEFReaderSession? // stores session
     private var onResult: ((Bool) -> Void)? // callback - success or not
     
-    func startScan(prompt: String, onResult: @escaping (Bool) -> Void) {
+    func startScan(prompt: String, onResult: @escaping (Bool) -> Void) { // prompt = "Scan To Start Focus"
         self.onResult = onResult
         
         guard NFCNDEFReaderSession.readingAvailable else {
@@ -20,23 +20,26 @@ final class NFCManager: NSObject, NFCNDEFReaderSessionDelegate {
             self.onResult = nil
             return
         }
-        session = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
-        session?.alertMessage = prompt // text shown in NFC scan
-        session?.begin()
+        nfcSession = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
+        nfcSession?.alertMessage = prompt // Text shown in NFC scan
+        nfcSession?.begin() // Starts NFC Session In-App
+        // let isScanning = true
     }
     
-    func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
+    func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) { // Success function
         
         session.alertMessage = "Successful Scan."
         onResult?(true)
         onResult = nil
-        self.session = nil
+        self.nfcSession = nil
+        // isScanning = false
     }
     
-    func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: any Error) { // error/cancel function callback
+    func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: any Error) { // Error/cancel function callback
         onResult?(false)
         onResult = nil
-        self.session = nil
+        self.nfcSession = nil
+        // isScanning = false
     }
     
 }

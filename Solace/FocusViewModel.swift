@@ -15,7 +15,7 @@ final class FocusViewModel: ObservableObject { // toggle button logic
     private var timer: Timer? // ? == may or may not exist
     
     // NFC
-    @AppStorage("nfcTagID") var nfcTagID: String = "04A1B2C3D4E5F6"
+    //@AppStorage("nfcTagID") var nfcTagID: String = "04A1B2C3D4E5F6"
     
     //    Valid = NDEF contains a known string, like:
     //        •    Text record: SOLACE_UNLOCK
