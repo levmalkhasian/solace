@@ -10,7 +10,7 @@ import SwiftUI
 struct StatsView: View {
     @ObservedObject var vm: FocusViewModel
     
-    // STATS TAB (placeholder)
+    // STATS TAB
     var body: some View {
         VStack {
             Text("Stats")
@@ -21,6 +21,7 @@ struct StatsView: View {
             VStack {
                 Text("Today: \(vm.timeElapsedToday.asClock)")
                 Text("Last Session: \(vm.lastSessionTime.asClock)")
+                Text("This Week: \(vm.lastSessionTime.asClock)") // add weekly time
             }
             .font(.title2)
            

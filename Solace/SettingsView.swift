@@ -11,6 +11,7 @@ import FamilyControls
 struct SettingsView: View {
     @ObservedObject var vm: FocusViewModel
     @ObservedObject var shieldManager: ShieldManager
+    @State private var showEmergencyConfirm = false
     
     // SETTINGS TAB
     var body: some View {
@@ -29,16 +30,10 @@ struct SettingsView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding()
+
                 Button {
-                    let didUnblock = shieldManager.emergencyUnblock() // > 0 unblocks left
-                    
-                    if didUnblock == true {
-                        vm.endFocus() // End focus mode so we arent stuck. 
-                    }
-                    else {
-                        print("You’ve used all 3 emergency unblocks.")
-                    }
-                    
+                    // Step 1: ask for confirmation (no side effects here)
+                    showEmergencyConfirm = true
                 } label: {
                     Text("Emergency Unblock")
                         .font(.title2)
@@ -48,6 +43,30 @@ struct SettingsView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(Color.red)
                         )
+                }
+                .confirmationDialog(
+                    vm.isFocused ? "Use an emergency unblock? You have \(shieldManager.emergencyUnblocksRemaining) left.": "You are not in focus mode currently.",
+                    isPresented: $showEmergencyConfirm,
+                    titleVisibility: .visible
+                ) {
+                    if vm.isFocused {
+                        Button("Unblock", role: .destructive) {
+                            let didUnblock = shieldManager.emergencyUnblock()
+                            if didUnblock {
+                                vm.endFocus()
+                            } else {
+                                print("You’ve used all 3 emergency unblocks.")
+                            }
+                        }
+
+                        Button("Cancel", role: .cancel) {
+                            // do nothing
+                        }
+                    } else {
+                        Button("OK", role: .cancel) {
+                            // do nothing
+                        }
+                    }
                 }
             }
             Spacer()

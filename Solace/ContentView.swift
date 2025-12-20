@@ -22,7 +22,6 @@ struct ContentView: View {
             Color.black.ignoresSafeArea()
             
             TabView {
-                
                 VStack {
                     VStack {
                         Text("Solace")
