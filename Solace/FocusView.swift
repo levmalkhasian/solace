@@ -9,36 +9,42 @@ import SwiftUI
 
 struct FocusView: View { // Focus Mode View
     @ObservedObject var vm: FocusViewModel
-    @ObservedObject var shieldManager: ShieldManager // pass in shieldManager
+    @ObservedObject var shieldManager: ShieldManager // Pass in shieldManager
     let nfcManager: NFCManager
 
-    
     var body: some View {
         VStack {
-            Text("Focus Mode: ON")
-            Text("This Session: \(vm.timeElapsed.asClock)")
-            Text("Today: \(vm.timeElapsedToday.asClock)")
             Button {
-                nfcManager.startScan(prompt: "Scan to End Focus") { success in
+                nfcManager.startScan(prompt: "Scan to End Focus Mode") { success in
                     if success {
-                        shieldManager.clearShield() // uncomment later
-                        vm.endFocus()
-                        // call function here
+                        Task { @MainActor in
+                            shieldManager.clearShield()
+                            vm.endFocus()
+                        }
                     } else {
                         print("Scan failed.")
                     }
                 }
             } label: {
                 Text("End Focus")
-                    .foregroundColor(.blue)
+                    .foregroundColor(.red)
                     .font(.headline)
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.blue, lineWidth: 2)
+                            .stroke(Color.red, lineWidth: 2)
                         )
             }
+            // Remove potentially?
+            Text("Focus Mode: ON")
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding(.top, 10)
+            Text("This Session: \(vm.timeElapsed.asClock)")
+                .foregroundColor(.white)
+            Text("Today: \(vm.timeElapsedToday.asClock)")
+                .foregroundColor(.white)
+            
         }
-        
     }
 }
