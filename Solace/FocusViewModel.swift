@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class FocusViewModel: ObservableObject { // toggle button logic
     @Published var isFocused: Bool = false
     @Published var timeElapsed: Int = 0
@@ -25,8 +26,11 @@ final class FocusViewModel: ObservableObject { // toggle button logic
         isFocused = true // ENABLE FOCUS MODE
         lastSessionTime = timeElapsed // last session time, might not need
         timeElapsed = 0 // stopwatch/current time
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
                 self.timeElapsed += 1
+            }
         }
         // start timer, store in variable
     }
@@ -35,8 +39,8 @@ final class FocusViewModel: ObservableObject { // toggle button logic
         timer?.invalidate() // TURN OFF TIMER
         timer = nil
 
-        timeElapsedToday += timeElapsed // append curr session time to total today.
         lastSessionTime = timeElapsed
+        timeElapsedToday += timeElapsed // append curr session time to total today.
 
         isFocused = false // DISABLE FOCUS MODE
         timeElapsed = 0 // RESET TIMER

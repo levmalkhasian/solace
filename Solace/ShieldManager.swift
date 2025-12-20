@@ -11,20 +11,30 @@ import ManagedSettings
 
 final class ShieldManager: ObservableObject {
     // Choosing apps to block function
-    @Published var selection = FamilyActivitySelection() // the apps the user picked
-    private let store = ManagedSettingsStore() // var to control shielding
-    func requestAuthentication() async { // grant screen time auth
+    @Published var selection = FamilyActivitySelection() // The apps the user picked
+    @Published var alwaysAllowed = FamilyActivitySelection() // Apps that are allowed always
+    private let store = ManagedSettingsStore() // Var to control shielding
+    
+    func requestAuthentication() async { // Grant screen time auth
         do {
-            try await AuthorizationCenter.shared.requestAuthorization(for: .individual) // ask user for screen time permissions
+            try await AuthorizationCenter.shared.requestAuthorization(for: .individual) // Ask user for screen time permissions
             // REQUIRED
             } catch {
                 print("FamilyControls authorization failed:", error)
         }
     }
-    func applyShield() { // applies app blocks
-        store.shield.applications = selection.applicationTokens
+    func applyShield() { // Applies app blocks
+        if !selection.applicationTokens.isEmpty {
+            store.shield.applications = selection.applicationTokens // block apps
+        }
+        if !selection.categoryTokens.isEmpty {
+            store.shield.applicationCategories = .specific(selection.categoryTokens) // block specific categories
+        }
+        if !selection.webDomainTokens.isEmpty {
+            store.shield.webDomains = selection.webDomainTokens // block web domains
+        }
     }
-    func clearShield() { // removes all blocks
+    func clearShield() { // Removes all blocks
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil

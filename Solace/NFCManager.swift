@@ -29,15 +29,19 @@ final class NFCManager: NSObject, NFCNDEFReaderSessionDelegate {
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) { // Success function
         
         session.alertMessage = "Successful Scan."
-        onResult?(true)
-        onResult = nil
+        DispatchQueue.main.async {
+            self.onResult?(true)
+            self.onResult = nil
+        }
         self.nfcSession = nil
         // isScanning = false
     }
     
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: any Error) { // Error/cancel function callback
-        onResult?(false)
-        onResult = nil
+        DispatchQueue.main.async {
+            self.onResult?(false)
+            self.onResult = nil
+        }
         self.nfcSession = nil
         // isScanning = false
     }

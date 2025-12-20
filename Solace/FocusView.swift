@@ -19,10 +19,11 @@ struct FocusView: View { // Focus Mode View
             Text("This Session: \(vm.timeElapsed.asClock)")
             Text("Today: \(vm.timeElapsedToday.asClock)")
             Button {
-                shieldManager.clearShield() // uncomment later
                 nfcManager.startScan(prompt: "Scan to End Focus") { success in
                     if success {
-                        vm.endFocus() // call function here
+                        shieldManager.clearShield() // uncomment later
+                        vm.endFocus()
+                        // call function here
                     } else {
                         print("Scan failed.")
                     }
