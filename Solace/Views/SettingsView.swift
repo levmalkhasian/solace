@@ -19,6 +19,7 @@ struct SettingsView: View {
             Text("Settings")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
+                .padding(.top, 30)
 
             Spacer()
             VStack {

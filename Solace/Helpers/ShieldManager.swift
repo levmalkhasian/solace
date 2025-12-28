@@ -25,6 +25,7 @@ final class ShieldManager: ObservableObject {
                 print("FamilyControls authorization failed:", error)
         }
     }
+    
     func applyShield() { // Applies app blocks
         // Block apps, but never block anything in the Always Allowed list
         let blockedApps = selection.applicationTokens.subtracting(alwaysAllowed.applicationTokens)
@@ -40,11 +41,13 @@ final class ShieldManager: ObservableObject {
             store.shield.webDomains = selection.webDomainTokens // block web domains
         }
     }
+    
     func clearShield() { // Removes all blocks
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil
     }
+    
     func emergencyUnblock() -> Bool { // Emergency unblock, only 3.
         guard emergencyUnblocksRemaining > 0 else {
             return false
