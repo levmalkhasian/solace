@@ -9,7 +9,7 @@ import SwiftUI
 import AlarmKit
 
 struct AlarmView: View {
-    @ObservedObject var vm: FocusViewModel
+    @ObservedObject var vm: FocusSessionManager
     @State private var isAlarmEnabled = false
     var lastWakeTime: String?
     

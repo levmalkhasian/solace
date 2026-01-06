@@ -11,7 +11,7 @@ import FamilyControls // Screen Time + App Picker Module
 import ManagedSettings // Enforces OS-Level Blocking
 
 struct ContentView: View {
-    @StateObject private var vm = FocusViewModel()
+    @StateObject private var vm = FocusSessionManager()
     @StateObject private var shieldManager = ShieldManager()
     @State private var showingPicker = false
     @State private var focusModes: [FocusMode] = FocusModesPersistence.load()

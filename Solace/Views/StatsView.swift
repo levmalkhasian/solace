@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StatsView: View {
-    @ObservedObject var vm: FocusViewModel
+    @ObservedObject var vm: FocusSessionManager
     
     // STATS TAB
     var body: some View {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 @MainActor
-final class FocusViewModel: ObservableObject { // toggle button logic
+final class FocusSessionManager: ObservableObject { // toggle button logic
     @Published var isFocused: Bool = false
     @Published var focusStart: Date?
     @Published var timeElapsed: Int = 0

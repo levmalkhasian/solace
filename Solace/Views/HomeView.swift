@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     // Inject shared instances from ContentView
-    @ObservedObject var vm: FocusViewModel
+    @ObservedObject var vm: FocusSessionManager
     @ObservedObject var shieldManager: ShieldManager
     @Binding var focusModes: [FocusMode] // Saved Modes
     let nfcManager: NFCManager

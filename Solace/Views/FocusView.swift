@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FocusView: View { // Focus Mode View
-    @ObservedObject var vm: FocusViewModel
+    @ObservedObject var vm: FocusSessionManager
     @ObservedObject var shieldManager: ShieldManager // Pass in shieldManager
     let nfcManager: NFCManager
 

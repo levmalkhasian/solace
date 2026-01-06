@@ -9,7 +9,7 @@ import SwiftUI
 import FamilyControls
 
 struct SettingsView: View {
-    @ObservedObject var vm: FocusViewModel
+    @ObservedObject var vm: FocusSessionManager
     @ObservedObject var shieldManager: ShieldManager
     @State private var showEmergencyConfirm = false
     
