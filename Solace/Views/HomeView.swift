@@ -37,80 +37,205 @@ struct HomeView: View {
 
                 Spacer(minLength: 20)
 
-                VStack {
-                    
-                Image(systemName: vm.isFocused ? "lock.shield.fill": "lock.shield")
-                    .foregroundColor(vm.isFocused ? .red :.blue)
-                    .animation(Animation.easeInOut(duration: 0.3), value: vm.isFocused)
-                    .font(.system(size: 180))
-                    .aspectRatio(contentMode: .fit)
-                
-                if !vm.isFocused {
-                    // Start Focus Button
-                    Button {
-                        guard let id = selectedFocusModeID,
-                              let mode = focusModes.first(where: { $0.id == id }) else {
-                            print("Select a focus mode first")
-                            return
-                        }
-                        
-                        // Load the mode's selection into ShieldManager BEFORE scanning
-                        shieldManager.selection = mode.selection
-                        
-                        nfcManager.startScan(prompt: "Scan to Start Focus") { success in
-                            if success {
-                                shieldManager.applyShield()
-                                vm.startFocus()
-                            } else {
-                                print("Failed to start focus mode.")
-                            }
-                        }
-                    } label: {
-                        Text("Start Focus")
+                VStack(spacing: 24) {
+
+                    // HERO CARD
+                    VStack(spacing: 16) {
+                        Image(systemName: vm.isFocused ? "lock.shield.fill" : "lock.shield")
+                            .foregroundColor(vm.isFocused ? .red : .blue)
+                            .animation(.easeInOut(duration: 0.3), value: vm.isFocused)
+                            .font(.system(size: 120))
+
+                        Text(vm.isFocused ? "Focus Active" : "Ready to Focus")
+                            .font(.title2)
+                            .fontWeight(.semibold)
                             .foregroundColor(.white)
-                            .font(.headline)
+
+                        Text(vm.isFocused
+                             ? "Your distractions are currently blocked."
+                             : "Select a focus mode and scan your tag to begin.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.white.opacity(0.06))
+                    )
+
+                    // PRIMARY ACTION
+                    if !vm.isFocused {
+                        Button {
+                            guard let id = selectedFocusModeID,
+                                  let mode = focusModes.first(where: { $0.id == id }) else {
+                                print("Select a focus mode first")
+                                return
+                            }
+
+                            shieldManager.selection = mode.selection
+
+                            nfcManager.startScan(prompt: "Scan to Start Focus") { success in
+                                if success {
+                                    shieldManager.applyShield()
+                                    vm.startFocus()
+                                } else {
+                                    print("Failed to start focus mode.")
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "bolt.fill")
+                                Text("Start Focus")
+                                    .fontWeight(.semibold)
+                                Spacer()
+                            }
                             .padding()
+                            .frame(maxWidth: .infinity)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
+                                RoundedRectangle(cornerRadius: 16)
                                     .fill(Color.blue)
                             )
+                            .foregroundColor(.white)
+                        }
+                        .disabled(selectedFocusModeID == nil)
+                    } else {
+                        Button {
+                            nfcManager.startScan(prompt: "Scan to End Focus Mode") { success in
+                                if success {
+                                    Task { @MainActor in
+                                        shieldManager.clearShield()
+                                        vm.endFocus()
+                                    }
+                                } else {
+                                    print("Scan failed. Please try again.")
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "stop.fill")
+                                Text("End Focus")
+                                    .fontWeight(.semibold)
+                                Spacer()
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.red)
+                            )
+                            .foregroundColor(.white)
+                        }
                     }
-                    .disabled(selectedFocusModeID == nil)
 
-                    Button {
-                        showingModesSheet = true
-                    } label: {
-                        Text("Manage Focus Modes")
-                            .foregroundColor(.blue)
-                            .font(.headline)
-                            .padding(.top, 10)
+                    // MODE CARD
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Current Mode")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .textCase(.uppercase)
+
+                        HStack {
+                            Text(currentModeName == "None" ? "No mode selected" : currentModeName)
+                                .font(.headline)
+                                .foregroundColor(currentModeName == "None" ? Color.white.opacity(0.65) : .green)
+
+                            Spacer()
+
+                            Button {
+                                guard !vm.isFocused else { return }
+                                showingModesSheet = true
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "pencil")
+                                    Text("Manage")
+                                        .font(.subheadline.weight(.semibold))
+                                }
+                                .foregroundColor(vm.isFocused ? .gray : .blue)
+                                .padding(.horizontal, 10)
+                                .frame(height: 30)
+                                .background(
+                                    Capsule()
+                                        .fill((vm.isFocused ? Color.gray : Color.blue).opacity(0.16))
+                                )
+                            }
+                            .disabled(vm.isFocused)
+                        }
                     }
-                    Text(currentModeName == "None"
-                         ? "Current Mode: None"
-                         : "Current Mode: \(currentModeName)")
-                    .padding(.bottom, 5)
-                    .foregroundColor(currentModeName == "None" ? .gray : .green)
-                    
-                    Text("Today's Focus: \(vm.timeElapsedToday.asClock)")
-                        //.font(.callout)
-                        .foregroundColor(.gray)
-                        .padding(.top, 1)
-                    
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.08))
+                    )
+
+                    // SESSION STATS
+                    VStack(alignment: .leading, spacing: 14) {
+                        if vm.isFocused {
+                            HStack(alignment: .top, spacing: 16) {
+                                VStack(alignment: .center, spacing: 10) {
+                                    Text("This Session")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                        .textCase(.uppercase)
+
+                                    Text(vm.timeElapsed.asClock)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .monospacedDigit()
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+
+                                Rectangle()
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 1, height: 58)
+
+                                VStack(alignment: .center, spacing: 10) {
+                                    Text("Today's Focus")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                        .textCase(.uppercase)
+
+                                    Text(vm.timeElapsedToday.asClock)
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .monospacedDigit()
+                                        .foregroundColor(.white)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                            }
+                        } else {
+                            Text("Today's Focus")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .textCase(.uppercase)
+
+                            Text(vm.timeElapsedToday.asClock)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .monospacedDigit()
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(20)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.08))
+                    )
                 }
-                
-                // Focus UI (shows only while focused)
-                if vm.isFocused {
-                    FocusView(vm: vm, shieldManager: shieldManager, nfcManager: nfcManager)
-                }
-                
-                }
+                .padding(.horizontal, 24)
                 .sheet(isPresented: $showingModesSheet) {
                     FocusModesSheetView(focusModes: $focusModes, selectedFocusModeID: $selectedFocusModeID)
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationDragIndicator(.visible)
                 }
 
-                Spacer()
+                Spacer(minLength: 0)
+
+                SolaceFooter()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
