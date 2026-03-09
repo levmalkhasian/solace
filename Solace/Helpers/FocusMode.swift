@@ -10,7 +10,7 @@ import FamilyControls
 
 struct FocusMode: Identifiable, Codable {
     // Stores Focus Modes specific to user selection.
-    var id: UUID = UUID()
+    var id: UUID = UUID() // Specific generated UUID for each focus mode
     var name: String
     var selection: FamilyActivitySelection
 

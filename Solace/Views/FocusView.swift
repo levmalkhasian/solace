@@ -22,7 +22,7 @@ struct FocusView: View { // Focus Mode View
                             vm.endFocus()
                         }
                     } else {
-                        print("Scan failed.")
+                        print("Scan failed. Please try again.")
                     }
                 }
             } label: {
@@ -41,9 +41,9 @@ struct FocusView: View { // Focus Mode View
                 .foregroundColor(.white)
                 .padding(.top, 10)
             Text("This Session: \(vm.timeElapsed.asClock)")
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
             Text("Today: \(vm.timeElapsedToday.asClock)")
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
             
         }
     }

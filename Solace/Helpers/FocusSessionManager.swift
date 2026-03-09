@@ -14,9 +14,24 @@ final class FocusSessionManager: ObservableObject { // toggle button logic
     @Published var timeElapsed: Int = 0
     @Published var lastSessionTime: Int = 0
     @AppStorage("timeElapsedToday") var timeElapsedToday: Int = 0
+    @AppStorage("timeElapsedTodayAnchor") private var timeElapsedTodayAnchor: Double = 0
+    // @AppStorage("startOfDay") var startOfDay = Calendar.current.startOfDay(for: Date())
+    // Prints something like: startOfDay raw: 2026-01-05 08:00:00 +0000
+    // Figure out how to implement calendar days that separate each day's focus time from one another.
     private var timer: Timer? // ? == may or may not exist
     
+    func refreshToday(now: Date = Date()) {
+        // Refresh the current day for accuracy
+        let startOfDay = Calendar.current.startOfDay(for: now).timeIntervalSince1970
+        if timeElapsedTodayAnchor != startOfDay {
+                timeElapsedToday = 0
+                timeElapsedTodayAnchor = startOfDay
+            }
+        //Calendar.current.isDate(date, inSameDayAs: startOfDay)
+    }
+    
     func startFocus() {
+        refreshToday() // Get current day
         isFocused = true // ENABLE FOCUS MODE
         focusStart = Date()
         // lastSessionTime = timeElapsed // last session time, might not need
@@ -31,6 +46,7 @@ final class FocusSessionManager: ObservableObject { // toggle button logic
     }
     
     func endFocus() {
+        refreshToday() // Get current day
         timer?.invalidate() // TURN OFF TIMER
         timer = nil
         
@@ -50,5 +66,5 @@ final class FocusSessionManager: ObservableObject { // toggle button logic
         isFocused = false // DISABLE FOCUS MODE
         timeElapsed = 0 // RESET TIMER
     }
-    
 }
+

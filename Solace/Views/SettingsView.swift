@@ -27,10 +27,10 @@ struct SettingsView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding()
-                Text("Coming soon")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding()
+//                Text("Coming soon")
+//                    .font(.title2)
+//                    .fontWeight(.semibold)
+//                    .padding()
 
                 Button {
                     // Step 1: ask for confirmation (no side effects here)
