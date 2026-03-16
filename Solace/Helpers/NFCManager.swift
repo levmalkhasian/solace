@@ -26,6 +26,8 @@ final class NFCManager: NSObject, NFCNDEFReaderSessionDelegate {
         // let isScanning = true
     }
     
+    func readerSessionDidBecomeActive(_ session: NFCNDEFReaderSession) {} // Intentionally Empty, to suppress console message
+
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) { // Success function
         
         session.alertMessage = "Successful Scan."

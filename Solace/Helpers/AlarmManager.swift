@@ -36,8 +36,8 @@ func requestAuthorization() async {
 //    }
 //}
 
-@available(iOS 26.0, *)
-func scheduleAlarm() {
-    // Scheduling an alarm
-    let countdownDuration = Alarm.CountdownDuration(preAlert: (10 * 60), postAlert: (5 * 60))
-}
+//@available(iOS 26.0, *)
+//func scheduleAlarm() {
+//    // Scheduling an alarm
+//    let countdownDuration = Alarm.CountdownDuration(preAlert: (10 * 60), postAlert: (5 * 60))
+//}

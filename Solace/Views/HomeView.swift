@@ -198,7 +198,7 @@ struct HomeView: View {
                                         .foregroundColor(.gray)
                                         .textCase(.uppercase)
 
-                                    Text(vm.timeElapsedToday.asClock)
+                                    Text((vm.timeElapsedToday + vm.timeElapsed).asClock)
                                         .font(.title2)
                                         .fontWeight(.bold)
                                         .monospacedDigit()

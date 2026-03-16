@@ -18,7 +18,8 @@ struct SolaceApp: App {
                 .environmentObject(focusManager)
                 .task {
                     focusManager.refreshToday(now: Date())
-                  }
+                    focusManager.restoreSessionIfNeeded()
+                }
                 .onChange(of: scenePhase) {
                     if scenePhase == .active {
                         // App became active (includes after launch + returning from background)

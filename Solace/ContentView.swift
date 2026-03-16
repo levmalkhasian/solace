@@ -11,16 +11,23 @@ import FamilyControls // Screen Time + App Picker Module
 import ManagedSettings // Enforces OS-Level Blocking
 
 struct ContentView: View {
-    @StateObject private var vm = FocusSessionManager()
+    @EnvironmentObject var vm: FocusSessionManager
     @StateObject private var shieldManager = ShieldManager()
     @State private var showingPicker = false
     @State private var focusModes: [FocusMode] = FocusModesPersistence.load()
-    @State private var selectedFocusModeID: UUID? = nil
+    @AppStorage("selectedFocusModeID") private var selectedFocusModeIDString: String = ""
+
+    private var selectedFocusModeID: Binding<UUID?> {
+        Binding(
+            get: { UUID(uuidString: selectedFocusModeIDString) },
+            set: { selectedFocusModeIDString = $0?.uuidString ?? "" }
+        )
+    }
     private let nfcManager = NFCManager()
     
     private var currentModeName: String {
         // Get focus name for home screen
-        guard let id = selectedFocusModeID,
+        guard let id = selectedFocusModeID.wrappedValue,
               let mode = focusModes.first(where: { $0.id == id }) else {
             return "None"
         }
@@ -36,7 +43,7 @@ struct ContentView: View {
                 focusModes: $focusModes,
                 nfcManager: nfcManager,
                 showingPicker: $showingPicker,
-                selectedFocusModeID: $selectedFocusModeID,
+                selectedFocusModeID: selectedFocusModeID,
                 currentModeName: currentModeName
             )
             .tabItem {
@@ -66,7 +73,7 @@ struct ContentView: View {
                 }
         }
         
-        .onChange(of: focusModes.map(\.id)) { _, _ in
+        .onChange(of: focusModes) { _, _ in
             FocusModesPersistence.save(focusModes)
         }
         .toolbarBackground(Color.black, for: .tabBar)

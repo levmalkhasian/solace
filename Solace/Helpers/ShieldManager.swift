@@ -14,7 +14,7 @@ final class ShieldManager: ObservableObject {
     // Choosing apps to block function
     @Published var selection = FamilyActivitySelection() // The apps the user picked
     @Published var alwaysAllowed = FamilyActivitySelection() // Apps that are allowed always
-    @AppStorage("unblockme") var emergencyUnblocksRemaining: Int = 3
+    @AppStorage("unblockme") var emergencyUnblocksRemaining: Int = 5
     private let store = ManagedSettingsStore() // Var to control shielding
     
     func requestAuthentication() async { // Grant screen time auth
@@ -27,6 +27,7 @@ final class ShieldManager: ObservableObject {
     }
     
     func applyShield() { // Applies app blocks
+        clearShield() // Remove any leftover shields from a previous session
         // Block apps, but never block anything in the Always Allowed list
         let blockedApps = selection.applicationTokens.subtracting(alwaysAllowed.applicationTokens)
         if !blockedApps.isEmpty {
