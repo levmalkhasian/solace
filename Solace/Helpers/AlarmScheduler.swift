@@ -44,6 +44,15 @@ final class AlarmScheduler: ObservableObject {
     @AppStorage("wakeAlarmMinute") private var storedMinute: Int = 0
     @AppStorage("wakeAlarmEnabled") var isEnabled: Bool = false
     @AppStorage("wakeAlarmID") private var storedAlarmID: String = ""
+    @AppStorage("wakeAlarmSound") private var storedSoundRaw: String = AlarmSound.systemDefault.rawValue
+
+    var selectedSound: AlarmSound {
+        AlarmSound(rawValue: storedSoundRaw) ?? .systemDefault
+    }
+
+    func setSound(_ sound: AlarmSound) {
+        storedSoundRaw = sound.rawValue
+    }
 
     var wakeTime: Date {
         var comps = DateComponents()
@@ -122,7 +131,7 @@ final class AlarmScheduler: ObservableObject {
             schedule: schedule,
             attributes: attributes,
             stopIntent: DismissAlarmIntent(alarmID: id.uuidString),
-            sound: .default
+            sound: selectedSound.alertKitSound
         )
 
         do {

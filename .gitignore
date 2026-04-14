@@ -110,10 +110,9 @@ AuthKey_*.p8
 *~
 
 # ============================================================================
-# Claude Code
-# CLAUDE.md (shared project guidance) IS tracked — it's the whole point.
-# Anything below is local-only.
+# Claude Code — all local, never committed
 # ============================================================================
+CLAUDE.md
 .claude/
 .claude-cache/
 CLAUDE.local.md

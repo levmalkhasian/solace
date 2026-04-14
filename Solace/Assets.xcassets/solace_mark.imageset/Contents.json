@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "logo (1).png",
+      "filename" : "solace_s_mark_1024.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "solace_s_mark_2048.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -17,5 +18,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

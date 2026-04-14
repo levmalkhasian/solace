@@ -54,12 +54,30 @@ final class FocusSessionManager: ObservableObject {
 
     // MARK: - Stats helpers
 
+    /// Seconds the currently-running session contributes to today, clamped
+    /// at today's 00:00 so a cross-midnight session only reports its
+    /// post-midnight portion. Zero when not focused.
+    var currentSessionSecondsToday: Int {
+        guard isFocused, let start = focusStart else { return 0 }
+        let now = Date()
+        let startOfToday = Calendar.current.startOfDay(for: now)
+        let effectiveStart = max(start, startOfToday)
+        return max(0, Int(now.timeIntervalSince(effectiveStart)))
+    }
+
+    /// Display value for "today's focus". Includes both already-banked time
+    /// (`timeElapsedToday`, written in `endFocus`) and the live portion of
+    /// any running session. Drives HomeView and StatsView.
+    var todayFocusSeconds: Int {
+        timeElapsedToday + currentSessionSecondsToday
+    }
+
     /// Total focus seconds over the last `daysBack` days (including today).
     func focusSeconds(daysBack: Int) -> Int {
         let history = loadDailyHistory()
         let calendar = Calendar.current
         let now = Date()
-        var total = timeElapsedToday
+        var total = todayFocusSeconds
         for daysAgo in 1..<daysBack {
             if let date = calendar.date(byAdding: .day, value: -daysAgo, to: now) {
                 total += history[dateKey(for: date)] ?? 0
@@ -73,7 +91,7 @@ final class FocusSessionManager: ObservableObject {
         let history = loadDailyHistory()
         let calendar = Calendar.current
         let now = Date()
-        var count = timeElapsedToday > 0 ? 1 : 0
+        var count = todayFocusSeconds > 0 ? 1 : 0
         for daysAgo in 1..<daysBack {
             if let date = calendar.date(byAdding: .day, value: -daysAgo, to: now) {
                 if (history[dateKey(for: date)] ?? 0) > 0 { count += 1 }
@@ -82,9 +100,23 @@ final class FocusSessionManager: ObservableObject {
         return count
     }
 
-    /// Lifetime unique focus days (history window + pre-history counter + today if applicable).
+    /// Lifetime unique focus days (history window + pre-history counter).
     var lifetimeFocusDaysTotal: Int {
         lifetimeFocusDaysBeforeHistory + focusDays(daysBack: 30)
+    }
+
+    /// Lifetime focus seconds that always reflects the running session.
+    /// `lifetimeFocusSeconds` is only incremented in `endFocus()`, so it
+    /// lags the live timer otherwise.
+    var lifetimeFocusSecondsLive: Int {
+        lifetimeFocusSeconds + currentSessionSecondsTotal
+    }
+
+    /// Total seconds of the currently-running session (not clamped to
+    /// today). Used for lifetime rollups during a live session.
+    var currentSessionSecondsTotal: Int {
+        guard isFocused, let start = focusStart else { return 0 }
+        return max(0, Int(Date().timeIntervalSince(start)))
     }
 
     func restoreSessionIfNeeded() {

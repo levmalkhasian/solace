@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import FamilyControls
+import CoreNFC
 
 struct HomeView: View {
     // Inject shared instances from ContentView
@@ -19,8 +21,31 @@ struct HomeView: View {
 
     // Local UI state for this tab
     @State private var showingModesSheet = false
+    @State private var showingNoModeAlert = false
+    @State private var showingPermissionAlert = false
+    @State private var showingNFCUnavailable = false
+    @State private var showingEndScanFailed = false
     @Binding var selectedFocusModeID: UUID? // User-chosen focus mode in sheet
     let currentModeName: String
+
+    private var familyControlsAuthorized: Bool {
+        AuthorizationCenter.shared.authorizationStatus == .approved
+    }
+
+    private func beginFocus() {
+        guard familyControlsAuthorized else {
+            showingPermissionAlert = true
+            return
+        }
+        guard let id = selectedFocusModeID,
+              let mode = focusModes.first(where: { $0.id == id }) else {
+            showingNoModeAlert = true
+            return
+        }
+        shieldManager.selection = mode.selection
+        shieldManager.applyShield()
+        vm.startFocus()
+    }
     
     // HOME TAB
     var body: some View {
@@ -53,7 +78,7 @@ struct HomeView: View {
 
                         Text(vm.isFocused
                              ? "Your distractions are currently blocked."
-                             : "Select a focus mode and scan your tag to begin.")
+                             : "Pick a focus mode and start a session. Only your tag can end it.")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
@@ -68,20 +93,17 @@ struct HomeView: View {
                     // PRIMARY ACTION
                     if !vm.isFocused {
                         Button {
-                            guard let id = selectedFocusModeID,
-                                  let mode = focusModes.first(where: { $0.id == id }) else {
-                                print("Select a focus mode first")
+                            guard selectedFocusModeID != nil else {
+                                showingNoModeAlert = true
                                 return
                             }
-
-                            shieldManager.selection = mode.selection
-
+                            guard NFCNDEFReaderSession.readingAvailable else {
+                                showingNFCUnavailable = true
+                                return
+                            }
                             nfcManager.startScan(prompt: "Scan to Start Focus") { success in
                                 if success {
-                                    shieldManager.applyShield()
-                                    vm.startFocus()
-                                } else {
-                                    print("Failed to start focus mode.")
+                                    Task { @MainActor in beginFocus() }
                                 }
                             }
                         } label: {
@@ -100,8 +122,40 @@ struct HomeView: View {
                             .foregroundColor(.white)
                         }
                         .disabled(selectedFocusModeID == nil)
+                        .alert("No Focus Mode", isPresented: $showingNoModeAlert) {
+                            Button("OK", role: .cancel) { }
+                        } message: {
+                            Text("Pick a focus mode in the Current Mode card before starting.")
+                        }
+                        .alert("Screen Time Access Needed", isPresented: $showingPermissionAlert) {
+                            Button("Open Settings") {
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                            Button("Cancel", role: .cancel) { }
+                        } message: {
+                            Text("Solace needs Screen Time access to block distracting apps. Enable it in Settings.")
+                        }
+                        .alert("NFC Unavailable", isPresented: $showingNFCUnavailable) {
+                            Button("OK", role: .cancel) { }
+                        } message: {
+                            Text("This device can't scan NFC tags. Solace needs an iPhone with NFC support.")
+                        }
+                        .alert("Scan Failed", isPresented: $showingEndScanFailed) {
+                            Button("Try Again") {
+                                showingEndScanFailed = false
+                            }
+                            Button("Cancel", role: .cancel) { }
+                        } message: {
+                            Text("We didn't detect your tag. Hold it flat against the top of your phone and try again.")
+                        }
                     } else {
                         Button {
+                            guard NFCNDEFReaderSession.readingAvailable else {
+                                showingNFCUnavailable = true
+                                return
+                            }
                             nfcManager.startScan(prompt: "Scan to End Focus Mode") { success in
                                 if success {
                                     Task { @MainActor in
@@ -109,7 +163,7 @@ struct HomeView: View {
                                         vm.endFocus()
                                     }
                                 } else {
-                                    print("Scan failed. Please try again.")
+                                    Task { @MainActor in showingEndScanFailed = true }
                                 }
                             }
                         } label: {
@@ -198,7 +252,7 @@ struct HomeView: View {
                                         .foregroundColor(.gray)
                                         .textCase(.uppercase)
 
-                                    Text((vm.timeElapsedToday + vm.timeElapsed).asClock)
+                                    Text(vm.todayFocusSeconds.asClock)
                                         .font(.title2)
                                         .fontWeight(.bold)
                                         .monospacedDigit()
@@ -212,7 +266,7 @@ struct HomeView: View {
                                 .foregroundColor(.gray)
                                 .textCase(.uppercase)
 
-                            Text(vm.timeElapsedToday.asClock)
+                            Text(vm.todayFocusSeconds.asClock)
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .monospacedDigit()

@@ -89,7 +89,7 @@ struct StatsView: View {
         switch filter {
         case .week:     return vm.focusSeconds(daysBack: 7)
         case .month:    return vm.focusSeconds(daysBack: 30)
-        case .lifetime: return vm.lifetimeFocusSeconds
+        case .lifetime: return vm.lifetimeFocusSecondsLive
         }
     }
 
@@ -160,7 +160,7 @@ struct StatsView: View {
                     if filter == .lifetime {
                         StatsCard(
                             title: "Time Reclaimed",
-                            value: vm.lifetimeFocusSeconds.asHours,
+                            value: vm.lifetimeFocusSecondsLive.asHours,
                             subtitle: "Hours saved from distraction, all time"
                         )
                     } else {
@@ -179,7 +179,7 @@ struct StatsView: View {
                     sectionHeader("Today")
 
                     HStack(spacing: 12) {
-                        SmallStatsCard(title: "Today's Focus", value: vm.timeElapsedToday.asClock)
+                        SmallStatsCard(title: "Today's Focus", value: vm.todayFocusSeconds.asClock)
                         SmallStatsCard(title: "Last Session",  value: vm.lastSessionTime.asClock)
                     }
                 }

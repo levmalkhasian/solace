@@ -17,6 +17,7 @@ final class ShieldManager: ObservableObject {
     @AppStorage("unblockme") var emergencyUnblocksRemaining: Int = 5
     @AppStorage("hideSensitiveContent") private var hideSensitiveContent: Bool = false
     @AppStorage("blockInAppPurchases") private var blockInAppPurchases: Bool = false
+    @AppStorage("blockAppInstalls") private var blockAppInstalls: Bool = false
     private let store = ManagedSettingsStore() // Var to control shielding
 
     func requestAuthentication() async { // Grant screen time auth
@@ -55,6 +56,13 @@ final class ShieldManager: ObservableObject {
             store.webContent.blockedByFilter = nil
         }
         store.appStore.denyInAppPurchases = blockInAppPurchases ? true : nil
+
+        // Prevent the user from deleting Solace (or any other app) while
+        // focused — otherwise the strict "only the tag can end it" model
+        // can be bypassed by deleting the app mid-session. Also optionally
+        // block new installs if the user has that toggle on.
+        store.application.denyAppRemoval = true
+        store.application.denyAppInstallation = blockAppInstalls ? true : nil
     }
 
     func clearShield() { // Removes all blocks
@@ -64,6 +72,8 @@ final class ShieldManager: ObservableObject {
         store.media.denyExplicitContent = nil
         store.webContent.blockedByFilter = nil
         store.appStore.denyInAppPurchases = nil
+        store.application.denyAppRemoval = nil
+        store.application.denyAppInstallation = nil
     }
     
     func emergencyUnblock() -> Bool { // Emergency unblock, only 3.
