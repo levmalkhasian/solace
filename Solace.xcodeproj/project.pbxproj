@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DF5C955B2F8E0A5C00B1A2D0 /* PUBLISHING.md in Resources */ = {isa = PBXBuildFile; fileRef = DF5C95592F8E0A5C00B1A2D0 /* PUBLISHING.md */; };
+		DF5C955C2F8E0A5C00B1A2D0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DF5C955A2F8E0A5C00B1A2D0 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DFAD47C72EF240C200D95832 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF5C95592F8E0A5C00B1A2D0 /* PUBLISHING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PUBLISHING.md; sourceTree = "<group>"; };
+		DF5C955A2F8E0A5C00B1A2D0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DFAD47B92EF240C100D95832 /* Solace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Solace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFAD47C62EF240C200D95832 /* SolaceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SolaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFAD47D02EF240C200D95832 /* SolaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SolaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +95,8 @@
 		DFAD47B02EF240C100D95832 = {
 			isa = PBXGroup;
 			children = (
+				DF5C95592F8E0A5C00B1A2D0 /* PUBLISHING.md */,
+				DF5C955A2F8E0A5C00B1A2D0 /* README.md */,
 				DFAD47BB2EF240C100D95832 /* Solace */,
 				DFAD47C92EF240C200D95832 /* SolaceTests */,
 				DFAD47D32EF240C200D95832 /* SolaceUITests */,
@@ -225,6 +234,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF5C955B2F8E0A5C00B1A2D0 /* PUBLISHING.md in Resources */,
+				DF5C955C2F8E0A5C00B1A2D0 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,7 +425,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Solace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "";
-				INFOPLIST_KEY_NFCReaderUsageDescription = "Solace uses NFC to start and end focus sessions";
+				INFOPLIST_KEY_NFCReaderUsageDescription = "Solace reads your NFC tag to start and end focus sessions. The tag acts as a physical key to your focus.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -445,7 +456,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Solace/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "";
-				INFOPLIST_KEY_NFCReaderUsageDescription = "Solace uses NFC to start and end focus sessions";
+				INFOPLIST_KEY_NFCReaderUsageDescription = "Solace reads your NFC tag to start and end focus sessions. The tag acts as a physical key to your focus.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

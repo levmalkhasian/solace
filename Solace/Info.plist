@@ -2,7 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NFCReaderUsageDescription</key>
+	<string>Solace reads your NFC tag to start and end focus sessions. The tag acts as a physical key to your focus.</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>Solace requires alarm kit usage in order to allow the user to set custom alarms.</string>
+	<string>Solace schedules wake-up alarms that can only be dismissed by scanning your NFC tag, so you have to physically get up to turn them off.</string>
 </dict>
 </plist>
