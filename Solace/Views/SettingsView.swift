@@ -61,8 +61,7 @@ struct SettingsView: View {
     @ObservedObject var vm: FocusSessionManager
     @ObservedObject var shieldManager: ShieldManager
     @State private var showEmergencyConfirm = false
-    @AppStorage("hideSensitiveContent") private var hideSensitiveContent = true
-    @AppStorage("strictModeEnabled") private var strictModeEnabled = false
+    @AppStorage("hideSensitiveContent") private var hideSensitiveContent = false
     @AppStorage("blockInAppPurchases") private var blockInAppPurchases = false
     
     // SETTINGS TAB
@@ -141,35 +140,21 @@ struct SettingsView: View {
                     VStack(spacing: 16) {
                         Toggle(isOn: $hideSensitiveContent) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Sensitive Content")
+                                Text("Hide Sensitive Content")
                                     .font(.headline)
-                                Text("Hide sensitive content")
+                                Text("Block adult websites and explicit music, podcasts, and news during focus sessions.")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
                         }
                         .toggleStyle(SwitchToggleStyle(tint: .red))
+                        .disabled(vm.isFocused)
                         .padding(16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(Color.white.opacity(0.08))
                         )
 
-                        Toggle(isOn: $strictModeEnabled) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Strict Mode")
-                                    .font(.headline)
-                                Text("Use stricter blocking rules")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        .toggleStyle(SwitchToggleStyle(tint: .red))
-                        .padding(16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(Color.white.opacity(0.08))
-                        )
                         Toggle(isOn: $blockInAppPurchases) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Block In-App Purchases")
@@ -180,11 +165,19 @@ struct SettingsView: View {
                             }
                         }
                         .toggleStyle(SwitchToggleStyle(tint: .red))
+                        .disabled(vm.isFocused)
                         .padding(16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(Color.white.opacity(0.08))
                         )
+
+                        if vm.isFocused {
+                            Text("Privacy settings are locked while a focus session is active.")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                 }
             }

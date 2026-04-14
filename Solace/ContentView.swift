@@ -51,12 +51,14 @@ struct ContentView: View {
                 Text("Home")
             }
             
-            // ALARM TAB - Linked to Separate File
-            AlarmView(vm: vm)
-                .tabItem{
-                    Image(systemName: "alarm.fill")
-                    Text("Alarm")
-                }
+            // ALARM TAB - iOS 26+ only (AlarmKit requirement)
+            if #available(iOS 26.0, *) {
+                AlarmView(vm: vm)
+                    .tabItem{
+                        Image(systemName: "alarm.fill")
+                        Text("Alarm")
+                    }
+            }
             
             // STATS TAB - Linked to Separate File
             StatsView(vm: vm)
@@ -95,4 +97,5 @@ struct ContentView: View {
 }
 #Preview {
     ContentView()
+        .environmentObject(FocusSessionManager())
 }

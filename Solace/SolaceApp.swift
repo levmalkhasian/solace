@@ -11,6 +11,7 @@ import SwiftUI
 struct SolaceApp: App {
     @StateObject private var focusManager = FocusSessionManager()
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("pendingAlarmDismissID") private var pendingAlarmDismissID: String = ""
 
     var body: some Scene {
         WindowGroup {
@@ -22,10 +23,29 @@ struct SolaceApp: App {
                 }
                 .onChange(of: scenePhase) {
                     if scenePhase == .active {
-                        // App became active (includes after launch + returning from background)
                         focusManager.refreshToday(now: Date())
                     }
                 }
+                .fullScreenCover(isPresented: Binding(
+                    get: { !pendingAlarmDismissID.isEmpty },
+                    set: { if !$0 { pendingAlarmDismissID = "" } }
+                )) {
+                    if #available(iOS 26.0, *) {
+                        AlarmDismissContainer(pendingAlarmDismissID: $pendingAlarmDismissID)
+                    }
+                }
+        }
+    }
+}
+
+@available(iOS 26.0, *)
+private struct AlarmDismissContainer: View {
+    @StateObject private var scheduler = AlarmScheduler()
+    @Binding var pendingAlarmDismissID: String
+
+    var body: some View {
+        AlarmDismissView(scheduler: scheduler) {
+            pendingAlarmDismissID = ""
         }
     }
 }

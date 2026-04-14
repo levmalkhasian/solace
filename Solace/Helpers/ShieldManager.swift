@@ -15,8 +15,10 @@ final class ShieldManager: ObservableObject {
     @Published var selection = FamilyActivitySelection() // The apps the user picked
     @Published var alwaysAllowed = FamilyActivitySelection() // Apps that are allowed always
     @AppStorage("unblockme") var emergencyUnblocksRemaining: Int = 5
+    @AppStorage("hideSensitiveContent") private var hideSensitiveContent: Bool = false
+    @AppStorage("blockInAppPurchases") private var blockInAppPurchases: Bool = false
     private let store = ManagedSettingsStore() // Var to control shielding
-    
+
     func requestAuthentication() async { // Grant screen time auth
         do {
             try await AuthorizationCenter.shared.requestAuthorization(for: .individual) // Ask user for screen time permissions
@@ -25,7 +27,7 @@ final class ShieldManager: ObservableObject {
                 print("FamilyControls authorization failed:", error)
         }
     }
-    
+
     func applyShield() { // Applies app blocks
         clearShield() // Remove any leftover shields from a previous session
         // Block apps, but never block anything in the Always Allowed list
@@ -41,12 +43,27 @@ final class ShieldManager: ObservableObject {
         if !selection.webDomainTokens.isEmpty {
             store.shield.webDomains = selection.webDomainTokens // block web domains
         }
+
+        // Session-scoped privacy restrictions. Cleared in clearShield().
+        if hideSensitiveContent {
+            store.media.denyExplicitContent = true
+            // Apple's auto adult-website filter (same as Screen Time's
+            // "Limit Adult Websites"). No explicit allow/deny overrides.
+            store.webContent.blockedByFilter = .auto([], except: [])
+        } else {
+            store.media.denyExplicitContent = nil
+            store.webContent.blockedByFilter = nil
+        }
+        store.appStore.denyInAppPurchases = blockInAppPurchases ? true : nil
     }
-    
+
     func clearShield() { // Removes all blocks
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil
+        store.media.denyExplicitContent = nil
+        store.webContent.blockedByFilter = nil
+        store.appStore.denyInAppPurchases = nil
     }
     
     func emergencyUnblock() -> Bool { // Emergency unblock, only 3.

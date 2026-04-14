@@ -1,20 +1,22 @@
-### Swift ###
-# Xcode
-#
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
-
+# ============================================================================
+# macOS
+# ============================================================================
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
 
-## User settings
+# ============================================================================
+# Xcode — user / build artifacts
+# ============================================================================
 xcuserdata/
-
-## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
+*.xcuserstate
+*.xcuserdatad
 *.xcscmblueprint
 *.xccheckout
-
-## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
-build/
-DerivedData/
 *.moved-aside
 *.pbxuser
 !default.pbxuser
@@ -24,64 +26,102 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-
-## Obj-C/Swift specific
 *.hmap
 
-## App packaging
+## Build outputs
+build/
+DerivedData/
+*.o
+*.a
+
+## App / archive packaging
 *.ipa
-*.dSYM.zip
 *.dSYM
+*.dSYM.zip
+*.xcarchive
 
 ## Playgrounds
 timeline.xctimeline
 playground.xcworkspace
 
+# ============================================================================
 # Swift Package Manager
-# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
-# Packages/
-# Package.pins
-# Package.resolved
-# *.xcodeproj
-# Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
-# hence it is not needed unless you have added a package configuration file to your project
-# .swiftpm
-
+# ============================================================================
 .build/
+.swiftpm/
+Packages/
+Package.resolved
 
-# CocoaPods
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
-# Pods/
-# Add this line if you want to avoid checking in source code from the Xcode workspace
-# *.xcworkspace
-
-# Carthage
-# Add this line if you want to avoid checking in source code from Carthage dependencies.
-# Carthage/Checkouts
-
+# ============================================================================
+# CocoaPods / Carthage / Accio (not used today — kept so future adds are safe)
+# ============================================================================
+Pods/
 Carthage/Build/
-
-# Accio dependency management
 Dependencies/
 .accio/
 
+# ============================================================================
 # fastlane
-# It is recommended to not store the screenshots in the git repo.
-# Instead, use fastlane to re-generate the screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/#source-control
-
+# ============================================================================
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
-# Code Injection
-# After new code Injection tools there's a generated folder /iOSInjectionProject
-# https://github.com/johnno1962/injectionforxcode
-
+# ============================================================================
+# Code injection
+# ============================================================================
 iOSInjectionProject/
 
-# End of https://www.toptal.com/developers/gitignore/api/swift
+# ============================================================================
+# Secrets, credentials, signing material
+# NEVER commit any of these. App Store Connect API keys, provisioning
+# profiles, certificates, and entitlements overrides live here too.
+# ============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.p8
+*.cer
+*.mobileprovision
+*.provisionprofile
+*.keystore
+*.jks
+Secrets.plist
+secrets.xcconfig
+*.xcconfig.local
+AuthKey_*.p8
+
+# Supabase / Firebase / other BaaS client configs that sometimes contain
+# embedded keys. Un-ignore individually if you decide a specific file is safe.
+# GoogleService-Info.plist
+# Supabase.plist
+
+# ============================================================================
+# Editors / tooling
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# Claude Code
+# CLAUDE.md (shared project guidance) IS tracked — it's the whole point.
+# Anything below is local-only.
+# ============================================================================
+.claude/
+.claude-cache/
+CLAUDE.local.md
+CLAUDE.*.local.md
+.anthropic/
+
+# ============================================================================
+# Misc
+# ============================================================================
+*.log
+crash_logs/
