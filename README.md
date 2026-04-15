@@ -1,5 +1,6 @@
 <div align="center">
-# Solace
+
+  # Solace
 
 ### Reclaim your focus.
 
