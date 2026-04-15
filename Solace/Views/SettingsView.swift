@@ -268,7 +268,7 @@ struct SettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.black)
+        .background(Color.solaceNavy)
         .foregroundColor(.white)
     }
 }

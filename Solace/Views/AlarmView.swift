@@ -65,7 +65,7 @@ struct AlarmView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.black)
+        .background(Color.solaceNavy)
         .foregroundColor(.white)
         .onAppear(perform: loadFromScheduler)
         .alert("Alarm Permission Needed", isPresented: $permissionDenied) {

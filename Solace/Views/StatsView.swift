@@ -85,6 +85,20 @@ struct StatsView: View {
     @ObservedObject var vm: FocusSessionManager
     @State private var filter: StatsFilter = .week
 
+    init(vm: FocusSessionManager) {
+        self.vm = vm
+        let appearance = UISegmentedControl.appearance()
+        appearance.selectedSegmentTintColor = UIColor(
+            red: 75/255, green: 111/255, blue: 221/255, alpha: 1
+        )
+        appearance.setTitleTextAttributes(
+            [.foregroundColor: UIColor.white], for: .selected
+        )
+        appearance.setTitleTextAttributes(
+            [.foregroundColor: UIColor.white], for: .normal
+        )
+    }
+
     private var periodSeconds: Int {
         switch filter {
         case .week:     return vm.focusSeconds(daysBack: 7)
@@ -191,7 +205,7 @@ struct StatsView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(Color.black)
+        .background(Color.solaceNavy)
         .foregroundColor(.white)
     }
 

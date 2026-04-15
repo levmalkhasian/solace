@@ -78,7 +78,7 @@ struct ContentView: View {
         .onChange(of: focusModes) { _, _ in
             FocusModesPersistence.save(focusModes)
         }
-        .toolbarBackground(Color.black, for: .tabBar)
+        .toolbarBackground(Color.solaceNavy, for: .tabBar)
         .toolbarBackground(.visible, for: .tabBar)
         
         .familyActivityPicker(isPresented: $showingPicker,
