@@ -4,6 +4,10 @@
 <dict>
 	<key>NFCReaderUsageDescription</key>
 	<string>Solace reads your NFC tag to start and end focus sessions. The tag acts as a physical key to your focus.</string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+	</array>
 	<key>NSAlarmKitUsageDescription</key>
 	<string>Solace schedules wake-up alarms that can only be dismissed by scanning your NFC tag, so you have to physically get up to turn them off.</string>
 </dict>

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "solace_app_store_1024.png",
+      "filename" : "SolaceLogoNew.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "solace_app_icon_dark_1024.png",
+      "filename" : "SolaceLogoNew 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

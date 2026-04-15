@@ -94,7 +94,7 @@ struct SettingsView: View {
 
                     VStack(spacing: 12) {
                         SettingsButton(
-                            title: "Login",
+                            title: "Login (Coming Soon)",
                             icon: "key",
                             color: .blue
                         ) {

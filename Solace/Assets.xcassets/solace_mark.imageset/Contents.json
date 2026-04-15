@@ -1,16 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "solace_s_mark_1024.png",
+      "filename" : "SolaceLogoNew.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "solace_s_mark_2048.png",
+      "filename" : "SolaceLogoNew 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "SolaceLogoNew 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
